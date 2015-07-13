@@ -19,24 +19,30 @@ Public Class VAPI
 
         Dim Response As Net.WebResponse = Request.GetResponse
         Dim Reader As New IO.StreamReader(Response.GetResponseStream)
-        Dim Result As String = Reader.ReadToEnd
+        Dim JR As New Newtonsoft.Json.JsonTextReader(Reader)
+        Dim Storage As New SubVInfo
 
-        My.Computer.FileSystem.WriteAllText("D:\JSONOutput.txt", Result, True)
-        MsgBox(Result)
+
+
+
+        '  "data": {
+        ' "name" "DerpyGuyIsRadCakes", - name
+        ' "title": "Derps is Rad-Cakes", - link 
+        ' "description": "Subverse Description", - desc
+        ' "creationDate": "2013-07-20T09:49:41.9910147Z ", - created
+        ' "subscriberCount": -1, - subs
+        ' "ratedAdult": true, - rated adult
+        ' "sidebar": "Sidebar info", - sidebar
+        ' "type": "Link" - type
+        '}
+
+
 
     End Sub
 
 End Class
 
 Public Class APITKN
-
-    Private AccessToken As String
-    Private TKNType As String
-    Private Expiration As Integer
-    Private User As String
-    Private Issued As Date
-    Private Expires As Date
-
 
     ''' <summary>
     ''' APITKN class constructor. All it does is build an encrypt key if one isn't present. All encrypt keys are per program.
@@ -74,7 +80,7 @@ Public Class APITKN
         Else
 
             Dim CryptE As New SIMPLE3DES.SIMPLE3DES(My.Settings.EncryptKey)
-            Expires = CryptE.DecryptData(My.Settings.Expires)
+            Dim Expires As Date = CryptE.DecryptData(My.Settings.Expires)
             If IsDate(Expires) Then
 
                 If Expires < Today Then
@@ -83,10 +89,6 @@ Public Class APITKN
 
                 Else
 
-                    Expiration = CryptE.DecryptData(My.Settings.Expiration)
-                    AccessToken = CryptE.DecryptData(My.Settings.AccessToken)
-                    Issued = CryptE.DecryptData(My.Settings.Issued)
-                    User = CryptE.DecryptData(My.Settings.User)
                     Return 1
 
                 End If
@@ -100,18 +102,6 @@ Public Class APITKN
         End If
 
     End Function
-
-
-    ''' <summary>
-    ''' Get_AccessToken returns the encrypted accesstoken to the caller. This program uses it for Down/Ups and Commenting.
-    ''' </summary>
-    ''' <returns>The Access Token String</returns>
-    Function Get_AccessToken() As String
-
-        Return AccessToken
-
-    End Function
-
 
     ''' <summary>
     ''' This is the function responsible for taking a user's username and password and requesting an access token based on it from the API.
@@ -133,9 +123,45 @@ Public Class APITKN
         Writer.Close()
 
         'Header Built, Data put on the Body, Ask for Key
-        Dim Response As Net.WebResponse = Request.GetResponse
+        Dim Response As Net.WebResponse
+
+        Try
+            Response = Request.GetResponse()
+        Catch
+            Return "Invalid Credentials. Bad Username or Password."
+        End Try
+
         Dim Reader As New IO.StreamReader(Response.GetResponseStream)
-        Dim Result As String = Reader.ReadToEnd
+
+        Dim S3 As New SIMPLE3DES.SIMPLE3DES(My.Settings.EncryptKey)
+
+        Dim JR As New Newtonsoft.Json.JsonTextReader(Reader)
+        While JR.Read()
+
+            If JR.Value IsNot Nothing And JR.TokenType = 4 Then
+
+                If JR.Value = "access_token" Then
+
+                    JR.Read()
+                    My.Settings.AccessToken = S3.EncryptData(JR.Value)
+
+                ElseIf JR.Value = ".expires" Or JR.Value = "expires" Then
+
+                    JR.Read()
+                    My.Settings.Expires = S3.EncryptData(JR.Value)
+
+                ElseIf JR.Value = ".issued" Or JR.Value = "issued" Then
+
+                    JR.Read()
+                    My.Settings.Issued = S3.EncryptData(JR.Value)
+
+                End If
+
+            End If
+
+        End While
+
+        My.Settings.User = S3.EncryptData(UserName)
 
         Return "Success"
 

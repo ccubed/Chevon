@@ -51,6 +51,9 @@
     <Reference Include="3DES">
       <HintPath>API\3DES.dll</HintPath>
     </Reference>
+    <Reference Include="Newtonsoft.Json">
+      <HintPath>API\Newtonsoft.Json.dll</HintPath>
+    </Reference>
     <Reference Include="System" />
     <Reference Include="System.Data" />
     <Reference Include="System.Deployment" />
@@ -76,6 +79,7 @@
     <Import Include="System.Threading.Tasks" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="API\API_Structures.vb" />
     <Compile Include="API\VAPI.vb" />
     <Compile Include="Form1.vb">
       <SubType>Form</SubType>
