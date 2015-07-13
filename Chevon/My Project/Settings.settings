@@ -6,22 +6,22 @@
       <Value Profile="(Default)">G/cUBW3W5mNRrGNKKGpddQ==</Value>
     </Setting>
     <Setting Name="EncryptKey" Type="System.String" Scope="User">
-      <Value Profile="(Default)">None</Value>
+      <Value Profile="(Default)">1zb7U!53=e1L]7JI[Uv3fz,zwc3s4E</Value>
     </Setting>
     <Setting Name="AccessToken" Type="System.String" Scope="User">
-      <Value Profile="(Default)">None</Value>
+      <Value Profile="(Default)">uEUOqyST52v2XxOV3Le-0wKvhtdrfGLsDnLCXotTerzwITKmY87xn8ATnM3ZnQgzRHM2N66gV4qEq1mAt7pSs__0XKXbp9PMrsjTWKYpltMT50upx34dRCOTn-AZJL3J7HE1NzQzEE603tIlNdw85zAMSRHKVG3q1cDScgVepwV0Efo3COYkE3RAN8lxyVCMrh6a-LdogpcvGP8buUCo335og13DiIH78Gnpn45x2XnvCzn_srYxUEwKineugQzDgRwh4KIkEXl_T1PLk0FfZQ4eZAV9LrHUIa4FZiYgQKUeHvY4um4hS8JFcYkcyAHk_B0m-547jx9AneordiFLQqDdXbSlXAnM6Vhl7qaoKbiPqxhLwdfruL2tdrWp8Oc4T6YIF1ppX_4H62MLXLXtppaSU3aHdO_n_naD0HW0NqcOdED7vVv0WiZFka-ek2_-a1E642CIU87rOpA0KltGXvIZivCjMCIRH9w3us4arLg</Value>
     </Setting>
     <Setting Name="Expiration" Type="System.String" Scope="User">
-      <Value Profile="(Default)">None</Value>
+      <Value Profile="(Default)">1295999</Value>
     </Setting>
     <Setting Name="User" Type="System.String" Scope="User">
-      <Value Profile="(Default)">None</Value>
+      <Value Profile="(Default)">cccubed</Value>
     </Setting>
     <Setting Name="Issued" Type="System.String" Scope="User">
-      <Value Profile="(Default)">None</Value>
+      <Value Profile="(Default)">Mon, 13 Jul 2015 05:44:27 GMT</Value>
     </Setting>
     <Setting Name="Expires" Type="System.String" Scope="User">
-      <Value Profile="(Default)">None</Value>
+      <Value Profile="(Default)">Tue, 28 Jul 2015 05:44:27 GMT</Value>
     </Setting>
   </Settings>
 </SettingsFile>
