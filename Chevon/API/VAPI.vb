@@ -79,8 +79,8 @@ Public Class APITKN
 
         Else
 
-            Dim CryptE As New SIMPLE3DES.SIMPLE3DES(My.Settings.EncryptKey)
-            Dim Expires As Date = CryptE.DecryptData(My.Settings.Expires)
+            Dim S3 As New SIMPLE3DES.SIMPLE3DES(My.Settings.EncryptKey)
+            Dim Expires As Date = S3.DecryptData(My.Settings.Expires)
             If IsDate(Expires) Then
 
                 If Expires < Today Then
