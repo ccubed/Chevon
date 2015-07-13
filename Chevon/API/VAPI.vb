@@ -4,6 +4,28 @@ Public Class VAPI
 
     Private API_Token As APITKN
 
+
+    ''' <summary>
+    ''' Submit a request for info on a specific subverse
+    ''' </summary>
+    ''' <param name="Subverse">Which Subverse do you want info on?</param>
+    Sub API_SUBVERSE_INFO(ByVal Subverse As String)
+
+        Dim Request As Net.HttpWebRequest = Net.HttpWebRequest.Create("https://fakevout.azurewebsites.net/api/v1/v/" & Subverse & "/info")
+        Request.Method = "GET"
+        Request.ContentType = "application/json"
+        Request.Headers.Add("Voat-ApiKey:" & My.Settings.PublicKey)
+        Request.Headers.Add("Authorization: Bearer " & My.Settings.AccessToken)
+
+        Dim Response As Net.WebResponse = Request.GetResponse
+        Dim Reader As New IO.StreamReader(Response.GetResponseStream)
+        Dim Result As String = Reader.ReadToEnd
+
+        My.Computer.FileSystem.WriteAllText("D:\JSONOutput.txt", Result, True)
+        MsgBox(Result)
+
+    End Sub
+
 End Class
 
 Public Class APITKN
@@ -111,11 +133,9 @@ Public Class APITKN
         Writer.Close()
 
         'Header Built, Data put on the Body, Ask for Key
-        Dim Response As Net.WebResponse = Request.GetResponse()
+        Dim Response As Net.WebResponse = Request.GetResponse
         Dim Reader As New IO.StreamReader(Response.GetResponseStream)
         Dim Result As String = Reader.ReadToEnd
-
-
 
         Return "Success"
 
