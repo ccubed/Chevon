@@ -68,43 +68,19 @@ Namespace My
         
         <Global.System.Configuration.UserScopedSettingAttribute(),  _
          Global.System.Diagnostics.DebuggerNonUserCodeAttribute(),  _
-         Global.System.Configuration.DefaultSettingValueAttribute("1zb7U!53=e1L]7JI[Uv3fz,zwc3s4E")>  _
-        Public Property EncryptKey() As String
-            Get
-                Return CType(Me("EncryptKey"),String)
-            End Get
-            Set
-                Me("EncryptKey") = value
-            End Set
-        End Property
-        
-        <Global.System.Configuration.UserScopedSettingAttribute(),  _
-         Global.System.Diagnostics.DebuggerNonUserCodeAttribute(),  _
-         Global.System.Configuration.DefaultSettingValueAttribute("uEUOqyST52v2XxOV3Le-0wKvhtdrfGLsDnLCXotTerzwITKmY87xn8ATnM3ZnQgzRHM2N66gV4qEq1mAt"& _ 
-            "7pSs__0XKXbp9PMrsjTWKYpltMT50upx34dRCOTn-AZJL3J7HE1NzQzEE603tIlNdw85zAMSRHKVG3q1"& _ 
-            "cDScgVepwV0Efo3COYkE3RAN8lxyVCMrh6a-LdogpcvGP8buUCo335og13DiIH78Gnpn45x2XnvCzn_s"& _ 
-            "rYxUEwKineugQzDgRwh4KIkEXl_T1PLk0FfZQ4eZAV9LrHUIa4FZiYgQKUeHvY4um4hS8JFcYkcyAHk_"& _ 
-            "B0m-547jx9AneordiFLQqDdXbSlXAnM6Vhl7qaoKbiPqxhLwdfruL2tdrWp8Oc4T6YIF1ppX_4H62MLX"& _ 
-            "LXtppaSU3aHdO_n_naD0HW0NqcOdED7vVv0WiZFka-ek2_-a1E642CIU87rOpA0KltGXvIZivCjMCIRH"& _ 
-            "9w3us4arLg")>  _
+         Global.System.Configuration.DefaultSettingValueAttribute("f5bQAUozkztB_WvLAMQE0kvSmJPxIBWoKGWQyHvSgW8BtpFYNxAeThRRGZiF1MFSXjXB5YHcZoagpzeqH"& _ 
+            "wi-yJaMu_ZNGgVNyOQtmMEC1yzcwFo4IV36CB-Jxmxpm1YJjDLGCeT0T18OQa4akWMXu4gWbDMg5p0uw"& _ 
+            "DwaawcI5PGok9bzKGJ6g2vJPGA26hF6jjENRuR6PyyglOZSII8-hvwm04jbVaFXjBBRHQ3esdme_d9ri"& _ 
+            "4cV48Xje3ZIdG_91R0NyaE5ic5SC-IfrsBotfYmNR4FL-xgZJ9p8rOVOM0wwzjn4Ubpo90l1u5U5YU3e"& _ 
+            "epnBtrg1qX_NalnFmn0LxTWUZLUDn86lKwljNlGFRrTegYEqJQK6_Eu2_CenwRuOb1sAktO4P0jnwUGx"& _ 
+            "z_JsSsD9fxM2Iv7wncYAB9Vs-fjuqM3x3vl_spS2YYdeLpNYSSlNtH8wUPBxsqEa90vQesctB2h8ojJT"& _ 
+            "pSypaZUdHQ")>  _
         Public Property AccessToken() As String
             Get
                 Return CType(Me("AccessToken"),String)
             End Get
             Set
                 Me("AccessToken") = value
-            End Set
-        End Property
-        
-        <Global.System.Configuration.UserScopedSettingAttribute(),  _
-         Global.System.Diagnostics.DebuggerNonUserCodeAttribute(),  _
-         Global.System.Configuration.DefaultSettingValueAttribute("1295999")>  _
-        Public Property Expiration() As String
-            Get
-                Return CType(Me("Expiration"),String)
-            End Get
-            Set
-                Me("Expiration") = value
             End Set
         End Property
         
@@ -122,7 +98,7 @@ Namespace My
         
         <Global.System.Configuration.UserScopedSettingAttribute(),  _
          Global.System.Diagnostics.DebuggerNonUserCodeAttribute(),  _
-         Global.System.Configuration.DefaultSettingValueAttribute("Mon, 13 Jul 2015 05:44:27 GMT")>  _
+         Global.System.Configuration.DefaultSettingValueAttribute("7/13/2015 8:44:04 PM")>  _
         Public Property Issued() As String
             Get
                 Return CType(Me("Issued"),String)
@@ -134,7 +110,7 @@ Namespace My
         
         <Global.System.Configuration.UserScopedSettingAttribute(),  _
          Global.System.Diagnostics.DebuggerNonUserCodeAttribute(),  _
-         Global.System.Configuration.DefaultSettingValueAttribute("Tue, 28 Jul 2015 05:44:27 GMT")>  _
+         Global.System.Configuration.DefaultSettingValueAttribute("7/28/2015 8:44:04 PM")>  _
         Public Property Expires() As String
             Get
                 Return CType(Me("Expires"),String)

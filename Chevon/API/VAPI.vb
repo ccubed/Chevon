@@ -1,105 +1,204 @@
-﻿Imports SIMPLE3DES
-
-Public Class VAPI
-
-    Private API_Token As APITKN
-
+﻿''' <summary>
+''' Chevon is the class containing the code and functions that allow interactions with the Voat.co API
+''' </summary>
+Public Class Chevon
 
     ''' <summary>
     ''' Submit a request for info on a specific subverse
     ''' </summary>
     ''' <param name="Subverse">Which Subverse do you want info on?</param>
-    Sub API_SUBVERSE_INFO(ByVal Subverse As String)
+    ''' <param name="Key">Public API Key</param>
+    ''' <returns>SubVInfo structure containing data on the subverse you asked about.</returns>
+    ''' <remarks>If an error is encounted, SubVInfo will contain 'Error' as the name and the received message will go to description.</remarks>
+    Function API_SUBVERSE_INFO(ByVal Subverse As String, ByVal Key As String) As SubVInfo
 
         Dim Request As Net.HttpWebRequest = Net.HttpWebRequest.Create("https://fakevout.azurewebsites.net/api/v1/v/" & Subverse & "/info")
         Request.Method = "GET"
         Request.ContentType = "application/json"
-        Request.Headers.Add("Voat-ApiKey:" & My.Settings.PublicKey)
-        Request.Headers.Add("Authorization: Bearer " & My.Settings.AccessToken)
+        Request.Headers.Add("Voat-ApiKey:" & Key)
 
         Dim Response As Net.WebResponse = Request.GetResponse
         Dim Reader As New IO.StreamReader(Response.GetResponseStream)
         Dim JR As New Newtonsoft.Json.JsonTextReader(Reader)
         Dim Storage As New SubVInfo
 
+        While JR.Read
 
+            If JR.Value IsNot Nothing And JR.TokenType = 4 Then
 
+                If JR.Value = "name" Then
 
-        '  "data": {
-        ' "name" "DerpyGuyIsRadCakes", - name
-        ' "title": "Derps is Rad-Cakes", - link 
-        ' "description": "Subverse Description", - desc
-        ' "creationDate": "2013-07-20T09:49:41.9910147Z ", - created
-        ' "subscriberCount": -1, - subs
-        ' "ratedAdult": true, - rated adult
-        ' "sidebar": "Sidebar info", - sidebar
-        ' "type": "Link" - type
-        '}
+                    JR.Read()
+                    Storage.Name = JR.Value
 
+                ElseIf JR.Value = "success" Then
 
+                    JR.Read()
+                    If JR.Value = "false" Then
 
-    End Sub
+                        Storage.Name = "Error"
 
-End Class
+                    End If
 
-Public Class APITKN
+                ElseIf JR.Value = "title" Then
 
-    ''' <summary>
-    ''' APITKN class constructor. All it does is build an encrypt key if one isn't present. All encrypt keys are per program.
-    ''' </summary>
-    Sub New()
+                    JR.Read()
+                    Storage.Title = JR.Value
 
-        If My.Settings.EncryptKey = "None" Then
+                ElseIf JR.Value = "description" Then
 
-            Dim Temp As New System.Text.StringBuilder
-            Dim Random As New Random()
-            For Count As Integer = 0 To 30
+                    JR.Read()
+                    Storage.Description = JR.Value
 
-                Temp.Append(Chr(Random.Next(33, 126)))
+                ElseIf JR.Value = "creationDate" Then
 
-            Next
+                    JR.Read()
+                    Storage.Created = JR.Value
 
-            My.Settings.EncryptKey = Temp.ToString
+                ElseIf JR.Value = "subscriberCount" Then
 
-        End If
+                    JR.Read()
+                    Storage.Subs = JR.Value
 
-    End Sub
+                ElseIf JR.Value = "ratedAdult" Then
 
-    ''' <summary>
-    ''' Name: Valid_Access_Token
-    ''' Purpose: Returns an integer value to indicate whether or not an access token is currently stored and if it is still valid.
-    ''' Returns: 0 - None Stored, 1 - All Clear, 2 - Stored but old, 3 - Stored but Corrupt 
-    ''' </summary>
-    ''' <returns>Integer</returns>
-    Function Valid_Access_Token() As Integer
+                    JR.Read()
+                    Storage.Adult = JR.Value
 
-        If My.Settings.AccessToken = "None" Then
+                ElseIf JR.Value = "sidebar" Then
 
-            Return 0
+                    JR.Read()
+                    Storage.Sidebar = JR.Value
 
-        Else
+                ElseIf JR.Value = "type" Then
 
-            Dim S3 As New SIMPLE3DES.SIMPLE3DES(My.Settings.EncryptKey)
-            Dim Expires As Date = S3.DecryptData(My.Settings.Expires)
-            If IsDate(Expires) Then
+                    JR.Read()
+                    Storage.Type = JR.Value
 
-                If Expires < Today Then
+                ElseIf JR.Value = "message" Then
 
-                    Return 2
-
-                Else
-
-                    Return 1
+                    JR.Read()
+                    Storage.Description = JR.Value
 
                 End If
 
-            Else
+            End If
 
-                Return 3
+        End While
+
+        Return Storage
+
+    End Function
+
+
+    ''' <summary>
+    ''' Function call the API To get submissions from a subverse
+    ''' </summary>
+    ''' <param name="Subverse">Subverse to get posts from</param>
+    ''' <param name="Key">Public API Key</param>
+    ''' <returns>A list of posts from that subverse</returns>
+    ''' <remarks>If an error is encounted, The first post will have an id of -1 and content will contain the error message.</remarks>
+    Function API_SUBMISSIONS_GET(ByVal Subverse As String, ByVal Key As String) As List(Of Post)
+
+        Dim Posts As New List(Of Post)
+        Dim Request As Net.HttpWebRequest = Net.HttpWebRequest.Create("https://fakevout.azurewebsites.net/api/v1/v/" & Subverse)
+        Request.Method = "GET"
+        Request.ContentType = "application/json"
+        Request.Headers.Add("Voat-ApiKey:" & Key)
+
+        Dim Response As Net.WebResponse = Request.GetResponse
+        Dim Reader As New IO.StreamReader(Response.GetResponseStream)
+        Dim JR As New Newtonsoft.Json.JsonTextReader(Reader)
+
+        Dim temp As New Post
+        Dim temp2 As New PostType
+
+        While JR.Read
+
+            If JR.Value IsNot Nothing And JR.TokenType = 4 Then
+
+                If JR.Value = "success" Then
+
+                    JR.Read()
+                    If JR.Value = "false" Then
+
+                        temp.ID = -1
+
+                    End If
+
+                ElseIf JR.Value = "id" Then
+
+                    JR.Read()
+                    temp.ID = JR.Value
+                    JR.Read()
+                    JR.Read()
+                    temp.Comments = JR.Value
+                    JR.Read()
+                    JR.Read()
+                    temp.Created = JR.Value
+                    JR.Read()
+                    JR.Read()
+                    temp.Ups = JR.Value
+                    JR.Read()
+                    JR.Read()
+                    temp.Downs = JR.Value
+                    JR.Read()
+                    JR.Read()
+                    temp.LastEdit = JR.Value
+                    JR.Read()
+                    JR.Read()
+                    temp.Views = JR.Value
+                    JR.Read()
+                    JR.Read()
+                    temp.User = JR.Value
+                    JR.Read()
+                    JR.Read()
+                    temp.Subverse = JR.Value
+                    JR.Read()
+                    JR.Read()
+                    temp.Thumbnail = JR.Value
+                    JR.Read()
+                    JR.Read()
+                    temp.Title = JR.Value
+                    JR.Read()
+                    JR.Read()
+                    If JR.Value = 1 Then
+
+                        temp2.Type = 1
+                        temp2.Name = "Self Post"
+                        temp.Type = temp2
+
+                    Else
+
+                        temp2.Type = 2
+                        temp2.Name = "Link Post"
+                        temp.Type = temp2
+
+                    End If
+                    JR.Read()
+                    JR.Read()
+                    temp.URL = JR.Value
+                    JR.Read()
+                    JR.Read()
+                    temp.Content = JR.Value
+                    JR.Read()
+                    JR.Read()
+                    temp.Formatted = JR.Value
+                    Posts.Add(temp)
+
+                ElseIf JR.Value = "message" Then
+
+                    JR.Read()
+                    temp.Content = JR.Value
+                    Posts.Add(temp)
+
+                End If
 
             End If
 
-        End If
+        End While
+
+        Return Posts
 
     End Function
 
@@ -108,13 +207,14 @@ Public Class APITKN
     ''' </summary>
     ''' <param name="UserName">Your voat.co Username</param>
     ''' <param name="Password">Your voat.co Password</param>
-    ''' <returns>Error Message if any or Success</returns>
-    Function NewAccessToken(ByVal UserName As String, ByVal Password As String) As String
+    ''' <param name="Key">Public API Key</param>
+    ''' <returns>Returns APITKN structure containing the Access Token, Issued and Expiration Date. If it fails, access token is set to 0.</returns>
+    Function NewAccessToken(ByVal UserName As String, ByVal Password As String, ByVal Key As String) As APITKN
 
         Dim Request As Net.HttpWebRequest = Net.HttpWebRequest.Create("https://fakevout.azurewebsites.net/api/token")
         Request.Method = "POST"
         Request.ContentType = "application/x-www-form-urlencoded"
-        Request.Headers.Add("Voat-ApiKey:" & My.Settings.PublicKey)
+        Request.Headers.Add("Voat-ApiKey:" & Key)
 
         'Header built, write data
         Dim Writer As IO.Stream = Request.GetRequestStream
@@ -124,16 +224,16 @@ Public Class APITKN
 
         'Header Built, Data put on the Body, Ask for Key
         Dim Response As Net.WebResponse
+        Dim Data As New APITKN
 
         Try
             Response = Request.GetResponse()
         Catch
-            Return "Invalid Credentials. Bad Username or Password."
+            Data.Access_Token = "0"
+            Return Data
         End Try
 
         Dim Reader As New IO.StreamReader(Response.GetResponseStream)
-
-        Dim S3 As New SIMPLE3DES.SIMPLE3DES(My.Settings.EncryptKey)
 
         Dim JR As New Newtonsoft.Json.JsonTextReader(Reader)
         While JR.Read()
@@ -143,17 +243,17 @@ Public Class APITKN
                 If JR.Value = "access_token" Then
 
                     JR.Read()
-                    My.Settings.AccessToken = S3.EncryptData(JR.Value)
+                    Data.Access_Token = JR.Value
 
                 ElseIf JR.Value = ".expires" Or JR.Value = "expires" Then
 
                     JR.Read()
-                    My.Settings.Expires = S3.EncryptData(JR.Value)
+                    Data.Expires = JR.Value
 
                 ElseIf JR.Value = ".issued" Or JR.Value = "issued" Then
 
                     JR.Read()
-                    My.Settings.Issued = S3.EncryptData(JR.Value)
+                    Data.Issued = JR.Value
 
                 End If
 
@@ -161,9 +261,7 @@ Public Class APITKN
 
         End While
 
-        My.Settings.User = S3.EncryptData(UserName)
-
-        Return "Success"
+        Return Data
 
     End Function
 
